@@ -48,7 +48,7 @@ namespace geom {
     inline quaternion<T> (const std::array<T, 3> vec) : w(0), x(vec[0]), y(vec[1]), z(vec[2]) {};
     /* (*this) * q2 */
     inline quaternion<T> operator *(const quaternion<T>& q2) const {
-      return quaternion(
+      return quaternion<T>(
           w * q2.w - x * q2.x - y * q2.y - z * q2.z,
           w * q2.x + x * q2.w + y * q2.z - z * q2.y,
           w * q2.y - x * q2.z + y * q2.w + z * q2.x,
@@ -160,7 +160,8 @@ namespace geom {
   // q.w is ignored as if being zero
   template <typename T>
   inline quaternion<T> exp_pure(const quaternion<T>& q) {
-    T alpha = abs(q);
+    quaternion<T> n(0, q.x, q.y, q.z);
+    T alpha = abs(n);
     if (alpha == 0) {
       // e^0 == 1
       return quaternion<T>(1);
@@ -335,16 +336,16 @@ namespace geom {
   class unit_slerp_interpolater {
     quaternion<T> q, d;
     public:
-      unit_slerp_interpolater<T>(quaternion<T> q1, quaternion<T> q2) : q(q1), d(log_unit(q1 * (*q2))) {};
+      unit_slerp_interpolater<T>(quaternion<T> q1, quaternion<T> q2) : q(q1), d(log_unit(q2 * (*q1))) {};
       inline quaternion<T> operator ()(const T& t) const {
         // \forall q \in H
         //   log (q^t) = t log q
         //   exp (log q) = q
         //
         //  s = slerp(q1, q2)(t)
-        //  s = (q1 q2^(-1))^t q1  (|q1| = |q2| = 1)
-        //  s q1* = (q1 q2*)^t
-        //  log (s q1*) = t d      (d = log (q1 q2*))
+        //  s = (q2 q1^(-1))^t q1  (|q1| = |q2| = 1)
+        //  s q1* = (q2 q1*)^t
+        //  log (s q1*) = t d      (d = log (q2 q1*))
         //  s q1* = exp (t d)
         //  s = exp (t d) q1
         //
