@@ -249,8 +249,8 @@ namespace geom {
         m(1, 2) = scale * (2 * (rot.y * rot.z + rot.w * rot.x));
         m(1, 3) = 0;
         m(2, 0) = scale * (2 * (rot.x * rot.z + rot.w * rot.y));
-        m(2, 2) = scale * (2 * (rot.y * rot.z - rot.w * rot.x));
-        m(2, 1) = scale * (1 - 2 * (rot.x * rot.x + rot.y * rot.y));
+        m(2, 1) = scale * (2 * (rot.y * rot.z - rot.w * rot.x));
+        m(2, 2) = scale * (1 - 2 * (rot.x * rot.x + rot.y * rot.y));
         m(2, 3) = 0;
         m(3, 0) = pos.x;
         m(3, 1) = pos.y;
